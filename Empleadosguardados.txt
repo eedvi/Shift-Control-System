@@ -1,0 +1,4 @@
+1223 23430 0101%Alfredo%Ventas%Vespertino%Activo
+2334 34345 0101%Alfredo%Ventas%Vespertino%Activo
+2344 68878 0101%Alfredo%Ventas%Vespertino%Activo
+2343 23473 0101%Enrique%Ventas%Vespertino%Activo
