@@ -1,0 +1,46 @@
+# Java
+*.class
+*.log
+hs_err_pid*
+replay_pid*
+*.hprof
+
+# Build outputs (Ant/IDE)
+/build/
+/dist/
+/out/
+
+# NetBeans (Ant projects)
+/nbproject/private/
+/nbproject/build-impl.xml
+/nbproject/genfiles.properties
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse (optional, if used)
+.project
+.classpath
+.settings/
+
+# VS Code (optional)
+.vscode/
+
+# Archives and packages
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# OS cruft
+.DS_Store
+Thumbs.db
