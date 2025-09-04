@@ -17,6 +17,7 @@ replay_pid*
 /nbbuild/
 /nbdist/
 /.nb-gradle/
+nbproject/
 
 # IntelliJ IDEA
 .idea/
