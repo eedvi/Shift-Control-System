@@ -1,4 +1,7 @@
-1223 23430 0101%Alfredo%Ventas%Vespertino%Activo
-2334 34345 0101%Alfredo%Ventas%Vespertino%Activo
-2344 68878 0101%Alfredo%Ventas%Vespertino%Activo
-2343 23473 0101%Enrique%Ventas%Vespertino%Activo
+admin|admin123|Administrador Sistema|1234567890123|Recursos Humanos|Diurno|Activo|admin@empresa.com|AdminRRHH
+rrhh|rrhh123|Admin RRHH|9876543210987|Recursos Humanos|Diurno|Activo|rrhh@empresa.com|AdminRRHH
+1223|password|Alfredo|23430010101|Ventas|Vespertino|Activo|evicente@tribalworldwide.gt|Empleado
+2334|password|Alfredo|34345010101|Ventas|Vespertino|Activo|vicenterafael683@gmail.com|Empleado
+2344|password|Alfredo|68878010101|Ventas|Vespertino|Activo|edvi3859@gmail.com|Empleado
+2343|password|Enrique|23473010101|Ventas|Vespertino|Activo|evicentet2@miumg.edu.gt|AdminRRHH
+evicente|12345|Rafael Vicente|3037335860110|Desarrollo|Matutino|Activo|mailexample@mail.com|Empleado

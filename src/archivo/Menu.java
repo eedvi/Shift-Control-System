@@ -11,11 +11,31 @@ package archivo;
  */
 public class Menu extends javax.swing.JFrame {
 
+    private Empleado usuarioActual;
+    private DatabaseManager dbManager;
+    private BitacoraManager bitacoraManager;
+
     /**
      * Creates new form Menu
      */
     public Menu() {
         initComponents();
+        // Constructor para compatibilidad con código existente
+    }
+
+    /**
+     * Constructor with authenticated user
+     */
+    public Menu(Empleado usuarioAutenticado) {
+        initComponents();
+        this.usuarioActual = usuarioAutenticado;
+        this.dbManager = new DatabaseManager();
+        this.bitacoraManager = new BitacoraManager();
+
+        // Personalizar la interfaz con información del usuario
+        if (usuarioAutenticado != null) {
+            jLabel1.setText("Bienvenido, " + usuarioAutenticado.getNombre());
+        }
     }
 
     /**
@@ -84,13 +104,16 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void RegistrarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegistrarEmpleadoActionPerformed
-        MantenimientoUsuario newframe = new MantenimientoUsuario ();
+        MantenimientoUsuario newframe = new MantenimientoUsuario(usuarioActual, dbManager, bitacoraManager);
         newframe.setVisible(true);
-        this.dispose ();
+        this.dispose();
     }//GEN-LAST:event_RegistrarEmpleadoActionPerformed
 
     private void GestionarRolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GestionarRolesActionPerformed
-        // TODO add your handling code here:
+        // Crear interfaz para gestión de roles
+        GestionRoles gestionRoles = new GestionRoles(usuarioActual, dbManager, bitacoraManager);
+        gestionRoles.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_GestionarRolesActionPerformed
 
     /**

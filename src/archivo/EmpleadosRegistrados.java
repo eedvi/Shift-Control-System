@@ -5,172 +5,188 @@
  */
 package archivo;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 /**
- *
- * @author DELL
+ * Enhanced Employee Consultation Interface with search and status management
  */
 public class EmpleadosRegistrados extends javax.swing.JFrame {
 
-  DefaultTableModel modelo = new DefaultTableModel();
-    
+    private Empleado usuarioActual;
+    private DatabaseManager dbManager;
+    private BitacoraManager bitacoraManager;
+    private EmailService emailService;
+
+    private JTextField txtBusqueda;
+    private JTable tablaEmpleados;
+    private DefaultTableModel modeloTabla;
+    private JButton btnBuscar;
+    private JButton btnDesactivar;
+    private JButton btnRegresar;
+    private JComboBox<String> cboMotivoInactividad;
+
     public EmpleadosRegistrados() {
         initComponents();
-        this.setLocationRelativeTo(null);
-        this.setTitle("Empledos guardados");
-        cargarModelo();
+        // Constructor para compatibilidad
     }
-private void cargarModelo(){
-        try{
-           
-            modelo.addColumn("Dpi");
-            modelo.addColumn("Nombre");
-            modelo.addColumn("Area");
-            modelo.addColumn("Turno");
-            modelo.addColumn("Estado");
-            tablaRegistros.setModel(modelo);
-            cargarArchivo();
-            
-        }catch(IOException e){
-            System.out.println(e);
-        }
+
+    public EmpleadosRegistrados(Empleado usuario, DatabaseManager db, BitacoraManager bitacora, EmailService email) {
+        this.usuarioActual = usuario;
+        this.dbManager = db;
+        this.bitacoraManager = bitacora;
+        this.emailService = email;
+        setupEnhancedInterface();
     }
-    
-    
-    private void cargarArchivo() throws IOException{
-        String fila[];
-        
-        try{
-           
-            FileReader archivo = new FileReader("Empleadosguardados.txt");
-            BufferedReader lectura = new BufferedReader(archivo);
-            
-            String linea = lectura.readLine();
-           
-            
-            while(linea != null){
-                 fila = linea.split("%");
-                 modelo.addRow(fila);
-                 linea = lectura.readLine();
+
+    private void setupEnhancedInterface() {
+        setTitle("Consultar Empleados - Sistema RRHH");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Panel superior con búsqueda
+        JPanel panelBusqueda = new JPanel(new FlowLayout());
+        panelBusqueda.add(new JLabel("Buscar:"));
+        txtBusqueda = new JTextField(20);
+        panelBusqueda.add(txtBusqueda);
+
+        btnBuscar = new JButton("Buscar");
+        btnBuscar.addActionListener(this::buscarEmpleados);
+        panelBusqueda.add(btnBuscar);
+
+        // Tabla de empleados
+        String[] columnas = {"Username", "Nombre", "DPI", "Área", "Turno", "Estado", "Email"};
+        modeloTabla = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hacer tabla no editable
             }
-            
-       }catch(FileNotFoundException e){
-           System.out.println(e);
-       }
-    }
-    
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+        };
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tablaRegistros = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        tablaEmpleados = new JTable(modeloTabla);
+        tablaEmpleados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(tablaEmpleados);
+        scrollPane.setPreferredSize(new Dimension(800, 400));
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        // Panel de acciones
+        JPanel panelAcciones = new JPanel(new FlowLayout());
 
-        tablaRegistros.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(tablaRegistros);
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
-        jLabel1.setText("Empleados Registrados");
-
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jButton1.setText("Atras");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
+        cboMotivoInactividad = new JComboBox<>(new String[]{
+            "Permiso Personal", "Vacaciones", "Cita IGSS", "Día de Cumpleaños",
+            "Suspensión Laboral", "Otro"
         });
+        panelAcciones.add(new JLabel("Motivo:"));
+        panelAcciones.add(cboMotivoInactividad);
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jButton2.setText("Salir");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        btnDesactivar = new JButton("Desactivar Empleado");
+        btnDesactivar.addActionListener(this::desactivarEmpleado);
+        panelAcciones.add(btnDesactivar);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(215, 215, 215)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(247, 247, 247)
-                        .addComponent(jButton1)
-                        .addGap(95, 95, 95)
-                        .addComponent(jButton2)))
-                .addContainerGap(218, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap())
-        );
+        btnRegresar = new JButton("Regresar");
+        btnRegresar.addActionListener(this::regresar);
+        panelAcciones.add(btnRegresar);
+
+        add(panelBusqueda, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(panelAcciones, BorderLayout.SOUTH);
+
+        // Cargar todos los empleados inicialmente
+        cargarTodosEmpleados();
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        RegistrodeEmpleados registros = new RegistrodeEmpleados();
-        this.setVisible(false);
-        registros.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EmpleadosRegistrados().setVisible(true);
-            }
-        });
+        setLocationRelativeTo(null);
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tablaRegistros;
-    // End of variables declaration//GEN-END:variables
+    private void cargarTodosEmpleados() {
+        List<Empleado> empleados = dbManager.obtenerTodosEmpleados();
+        actualizarTabla(empleados);
+    }
 
+    private void buscarEmpleados(ActionEvent e) {
+        String criterio = txtBusqueda.getText().trim();
+        List<Empleado> empleados = dbManager.buscarEmpleados(criterio);
+        actualizarTabla(empleados);
+    }
 
+    private void actualizarTabla(List<Empleado> empleados) {
+        modeloTabla.setRowCount(0); // Limpiar tabla
+
+        for (Empleado emp : empleados) {
+            Object[] fila = {
+                emp.getUsername(),
+                emp.getNombre(),
+                emp.getDpi(),
+                emp.getArea(),
+                emp.getTurno(),
+                emp.getEstado(),
+                emp.getEmail() != null ? emp.getEmail() : ""
+            };
+            modeloTabla.addRow(fila);
+        }
+    }
+
+    private void desactivarEmpleado(ActionEvent e) {
+        int filaSeleccionada = tablaEmpleados.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un empleado de la tabla",
+                                        "Selección requerida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String username = (String) modeloTabla.getValueAt(filaSeleccionada, 0);
+        String nombre = (String) modeloTabla.getValueAt(filaSeleccionada, 1);
+        String estadoActual = (String) modeloTabla.getValueAt(filaSeleccionada, 5);
+
+        if ("Inactivo".equals(estadoActual)) {
+            JOptionPane.showMessageDialog(this, "El empleado ya está inactivo",
+                                        "Estado actual", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        String motivo = (String) cboMotivoInactividad.getSelectedItem();
+
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+            "¿Está seguro de desactivar al empleado " + nombre + "?\nMotivo: " + motivo,
+            "Confirmar desactivación", JOptionPane.YES_NO_OPTION);
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            if (dbManager.desactivarEmpleado(username, motivo)) {
+                JOptionPane.showMessageDialog(this,
+                    "Empleado " + username + " ha sido desactivado exitosamente",
+                    "Desactivación exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+                // Registrar en bitácora
+                bitacoraManager.registrarOperacion(usuarioActual.getUsername(), "DEACTIVATE",
+                                                 "Empleado desactivado. Motivo: " + motivo, username);
+
+                // Enviar email de notificación
+                Empleado empleado = dbManager.obtenerEmpleadoPorUsername(username);
+                if (empleado != null && empleado.getEmail() != null && !empleado.getEmail().isEmpty()) {
+                    emailService.enviarNotificacionInactividad(empleado.getEmail(), empleado.getNombre(), motivo);
+                }
+
+                // Actualizar tabla
+                cargarTodosEmpleados();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al desactivar empleado",
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void regresar(ActionEvent e) {
+        MantenimientoUsuario menu = new MantenimientoUsuario(usuarioActual, dbManager, bitacoraManager);
+        menu.setVisible(true);
+        dispose();
+    }
+
+    // Mantener compatibilidad con el código existente
+    @SuppressWarnings("unchecked")
+    private void initComponents() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        pack();
+    }
 }

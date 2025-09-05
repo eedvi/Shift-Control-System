@@ -5,19 +5,44 @@
  */
 package archivo;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 /**
- *
- * @author DELL
+ * Enhanced Employee Registration Form with all required fields
  */
 public class RegistrodeEmpleados extends javax.swing.JFrame {
+
+    private Empleado usuarioActual;
+    private DatabaseManager dbManager;
+    private BitacoraManager bitacoraManager;
+    private EmailService emailService;
+
+    // Additional form fields for comprehensive employee data
+    private JTextField txtUsername;
+    private JTextField txtEmail;
+    private JPasswordField txtPassword;
+    private JComboBox<String> cboMotivoInactividad;
 
     /**
      * Creates new form RegistrodeEmpleados
      */
     public RegistrodeEmpleados() {
         initComponents();
+        // Constructor para compatibilidad
+    }
+
+    /**
+     * Constructor with dependencies
+     */
+    public RegistrodeEmpleados(Empleado usuario, DatabaseManager db, BitacoraManager bitacora, EmailService email) {
+        this.usuarioActual = usuario;
+        this.dbManager = db;
+        this.bitacoraManager = bitacora;
+        this.emailService = email;
+        initComponents();
+        setupAdditionalFields();
     }
 
     /**
@@ -182,64 +207,232 @@ public class RegistrodeEmpleados extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-     Archivo archivo = new Archivo();
-        archivo.crearArchivo();
+    private void setupAdditionalFields() {
+        // Enhance the form with additional required fields
+        Container contentPane = getContentPane();
+        contentPane.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        String dpi = txtdpi.getText();
-        String nombre = txtnombre.getText();
-        String area = txtarea.getText();
-        String turno = cboturno.getSelectedItem().toString();
-        String estado = cboestado.getSelectedItem().toString();
-        Empleado empleado = new Empleado(dpi, nombre, area, turno, estado);
-        archivo.escribirEnArchivo(empleado);
+        // Clear existing content and rebuild with comprehensive form
+        contentPane.removeAll();
 
-        JOptionPane.showMessageDialog(null, "Empleado guardado");
-    }//GEN-LAST:event_jButton1MouseClicked
+        // Title
+        JLabel lblTitulo = new JLabel("Registro de Empleados");
+        lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 36));
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        gbc.insets = new Insets(20, 20, 30, 20);
+        contentPane.add(lblTitulo, gbc);
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+        // Reset grid settings
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 20, 5, 10);
+        gbc.anchor = GridBagConstraints.WEST;
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        EmpleadosRegistrados registros = new EmpleadosRegistrados();
-        this.setVisible(false);
-        registros.setVisible(true);
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+        // Required fields (marked with *)
+        addFormField(contentPane, gbc, "No. DPI (*)", txtdpi = new JTextField(20), 1);
+        addFormField(contentPane, gbc, "Nombre Completo (*)", txtnombre = new JTextField(20), 2);
+        addFormField(contentPane, gbc, "Username (*)", txtUsername = new JTextField(20), 3);
+        addFormField(contentPane, gbc, "Área/Departamento (*)", txtarea = new JTextField(20), 4);
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(RegistrodeEmpleados.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(RegistrodeEmpleados.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(RegistrodeEmpleados.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RegistrodeEmpleados.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+        // Shift selection
+        cboturno = new JComboBox<>(new String[]{"Matutino", "Vespertino", "Diurno"});
+        addFormField(contentPane, gbc, "Turno (*)", cboturno, 5);
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new RegistrodeEmpleados().setVisible(true);
-            }
+        // Status
+        cboestado = new JComboBox<>(new String[]{"Activo", "Inactivo"});
+        addFormField(contentPane, gbc, "Estado", cboestado, 6);
+
+        // Inactivity reason (only visible when Inactive is selected)
+        cboMotivoInactividad = new JComboBox<>(new String[]{
+            "Permiso Personal", "Vacaciones", "Cita IGSS", "Día de Cumpleaños",
+            "Suspensión Laboral", "Otro"
         });
+        addFormField(contentPane, gbc, "Motivo Inactividad", cboMotivoInactividad, 7);
+
+        // Email and password
+        addFormField(contentPane, gbc, "Email", txtEmail = new JTextField(20), 8);
+        addFormField(contentPane, gbc, "Contraseña", txtPassword = new JPasswordField(20), 9);
+
+        // Buttons
+        JPanel panelBotones = new JPanel(new FlowLayout());
+
+        JButton btnRegistrar = new JButton("Registrar");
+        btnRegistrar.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnRegistrar.addActionListener(this::registrarEmpleado);
+        panelBotones.add(btnRegistrar);
+
+        JButton btnRegresar = new JButton("Regresar");
+        btnRegresar.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnRegresar.addActionListener(this::regresarMenu);
+        panelBotones.add(btnRegresar);
+
+        gbc.gridx = 0; gbc.gridy = 10; gbc.gridwidth = 2;
+        gbc.insets = new Insets(20, 20, 20, 20);
+        contentPane.add(panelBotones, gbc);
+
+        // Setup event listeners
+        cboestado.addActionListener(e -> toggleMotivoInactividad());
+        toggleMotivoInactividad(); // Initial state
+
+        pack();
+        setLocationRelativeTo(null);
+    }
+
+    private void addFormField(Container container, GridBagConstraints gbc, String labelText, JComponent field, int row) {
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("Tahoma", Font.BOLD, 16));
+
+        gbc.gridx = 0; gbc.gridy = row;
+        container.add(label, gbc);
+
+        field.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        gbc.gridx = 1; gbc.gridy = row;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        container.add(field, gbc);
+        gbc.fill = GridBagConstraints.NONE;
+    }
+
+    private void toggleMotivoInactividad() {
+        boolean isInactive = "Inactivo".equals(cboestado.getSelectedItem());
+        cboMotivoInactividad.setVisible(isInactive);
+    }
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        registrarEmpleado(null);
+    }
+
+    private void registrarEmpleado(ActionEvent evt) {
+        try {
+            // Validar campos requeridos
+            if (!validarCamposRequeridos()) {
+                return;
+            }
+
+            // Crear objeto empleado
+            String dpi = txtdpi.getText().trim();
+            String nombre = txtnombre.getText().trim();
+            String username = txtUsername.getText().trim();
+            String area = txtarea.getText().trim();
+            String turno = (String) cboturno.getSelectedItem();
+            String estado = (String) cboestado.getSelectedItem();
+            String email = txtEmail.getText().trim();
+            String password = new String(txtPassword.getPassword());
+
+            // Verificar duplicados
+            if (dbManager.existeUsername(username)) {
+                JOptionPane.showMessageDialog(this, "Error: El username ya existe en el sistema",
+                                            "Username Duplicado", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (dbManager.existeDpi(dpi)) {
+                JOptionPane.showMessageDialog(this, "Error: El DPI ya está registrado",
+                                            "DPI Duplicado", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Crear empleado
+            Empleado nuevoEmpleado = new Empleado(dpi, nombre, username, area, turno, estado, email, password);
+
+            // Si está inactivo, agregar motivo
+            if ("Inactivo".equals(estado)) {
+                String motivo = (String) cboMotivoInactividad.getSelectedItem();
+                nuevoEmpleado.setMotivoInactividad(motivo);
+            }
+
+            // Registrar en base de datos
+            if (dbManager.registrarEmpleado(nuevoEmpleado)) {
+                JOptionPane.showMessageDialog(this, "Empleado registrado exitosamente",
+                                            "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+                // Registrar en bitácora
+                bitacoraManager.registrarOperacion(usuarioActual.getUsername(), "CREATE_EMPLOYEE",
+                                                 "Empleado creado: " + nombre, username);
+
+                // Enviar email de bienvenida si está activo
+                if ("Activo".equals(estado) && !email.isEmpty()) {
+                    emailService.enviarEmailSimulado(email, "Bienvenido al Sistema RRHH",
+                        "Estimado/a " + nombre + ",\n\nSu cuenta ha sido creada exitosamente.\n" +
+                        "Username: " + username + "\n\nSaludos cordiales,\nSistema RRHH");
+                }
+
+                // Limpiar formulario
+                limpiarFormulario();
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Error: Ocurrió un error al registrar el empleado",
+                                            "Error de Registro", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(),
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private boolean validarCamposRequeridos() {
+        StringBuilder errores = new StringBuilder();
+
+        if (txtdpi.getText().trim().isEmpty()) {
+            errores.append("- No. DPI es requerido\n");
+        }
+        if (txtnombre.getText().trim().isEmpty()) {
+            errores.append("- Nombre Completo es requerido\n");
+        }
+        if (txtUsername.getText().trim().isEmpty()) {
+            errores.append("- Username es requerido\n");
+        }
+        if (txtarea.getText().trim().isEmpty()) {
+            errores.append("- Área/Departamento es requerido\n");
+        }
+        if (cboturno.getSelectedItem() == null) {
+            errores.append("- Turno es requerido\n");
+        }
+
+        if (errores.length() > 0) {
+            JOptionPane.showMessageDialog(this, "Campos requeridos faltantes:\n" + errores.toString(),
+                                        "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        // Validar formato de email si se proporciona
+        String email = txtEmail.getText().trim();
+        if (!email.isEmpty() && !email.contains("@")) {
+            JOptionPane.showMessageDialog(this, "El formato del email no es válido",
+                                        "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void limpiarFormulario() {
+        txtdpi.setText("");
+        txtnombre.setText("");
+        txtUsername.setText("");
+        txtarea.setText("");
+        txtEmail.setText("");
+        txtPassword.setText("");
+        cboturno.setSelectedIndex(0);
+        cboestado.setSelectedIndex(0);
+        cboMotivoInactividad.setSelectedIndex(0);
+    }
+
+    private void regresarMenu(ActionEvent evt) {
+        MantenimientoUsuario menu = new MantenimientoUsuario(usuarioActual, dbManager, bitacoraManager);
+        menu.setVisible(true);
+        dispose();
+    }
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
+        regresarMenu(null);
+    }
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
+        // Open the employee consultation window
+        EmpleadosRegistrados empleadosWindow = new EmpleadosRegistrados(usuarioActual, dbManager, bitacoraManager, emailService);
+        empleadosWindow.setVisible(true);
+        dispose();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

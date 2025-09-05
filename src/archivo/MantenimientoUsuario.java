@@ -5,17 +5,38 @@
  */
 package archivo;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+
 /**
  *
  * @author DELL
  */
 public class MantenimientoUsuario extends javax.swing.JFrame {
 
+    private Empleado usuarioActual;
+    private DatabaseManager dbManager;
+    private BitacoraManager bitacoraManager;
+    private EmailService emailService;
+
     /**
      * Creates new form MantenimientoUsuario
      */
     public MantenimientoUsuario() {
         initComponents();
+        // Constructor para compatibilidad
+    }
+
+    /**
+     * Constructor with dependencies
+     */
+    public MantenimientoUsuario(Empleado usuario, DatabaseManager db, BitacoraManager bitacora) {
+        initComponents();
+        this.usuarioActual = usuario;
+        this.dbManager = db;
+        this.bitacoraManager = bitacora;
+        this.emailService = new EmailService();
     }
 
     /**
@@ -108,27 +129,31 @@ public class MantenimientoUsuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-                RegistrodeEmpleados newframe = new RegistrodeEmpleados ();
-        newframe.setVisible(true);
-        this.dispose ();
+        // Agregar Empleado
+        RegistrodeEmpleados registro = new RegistrodeEmpleados(usuarioActual, dbManager, bitacoraManager, emailService);
+        registro.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        Menu registros = new Menu();
-        this.setVisible(false);
-        registros.setVisible(true);
+        // Regresar
+        Menu menu = new Menu(usuarioActual);
+        menu.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        EmpleadosRegistrados registros = new EmpleadosRegistrados();
-        this.setVisible(false);
-        registros.setVisible(true);
+        // Consultar Usuario
+        EmpleadosRegistrados consulta = new EmpleadosRegistrados(usuarioActual, dbManager, bitacoraManager, emailService);
+        consulta.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-      Solicitudes registros = new Solicitudes();
-        this.setVisible(false);
-        registros.setVisible(true);
+        // Solicitudes
+        Solicitudes solicitudes = new Solicitudes(usuarioActual, dbManager, bitacoraManager, emailService);
+        solicitudes.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**

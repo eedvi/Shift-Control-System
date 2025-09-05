@@ -45,3 +45,7 @@ nbproject/
 # OS cruft
 .DS_Store
 Thumbs.db
+
+# Configuration and data files with sensitive/runtime information
+email-config.properties
+bitacora.txt
