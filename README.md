@@ -2,7 +2,7 @@
 
 A comprehensive Java desktop application for employee shift management and HR administration, built with Swing GUI and file-based data storage.
 
-## 🌟 Features
+## Features
 
 ### Core Functionality
 - **Employee Management**: Complete CRUD operations for employee records
@@ -25,7 +25,7 @@ A comprehensive Java desktop application for employee shift management and HR ad
 - **Form Validation**: Comprehensive input validation and error handling
 - **Responsive GUI**: Modern Swing interface with professional styling
 
-## 📋 Requirements
+## Requirements
 
 ### System Requirements
 - **Java**: JDK 8 or higher
@@ -35,7 +35,7 @@ A comprehensive Java desktop application for employee shift management and HR ad
 ### Dependencies
 - `javax.mail-1.6.2.jar` (included in `lib/` directory)
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
 ### 1. Clone the Repository
 ```bash
@@ -76,7 +76,7 @@ Or manually:
 java -cp "build/classes:lib/*" archivo.Login
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Shift-Control-System/
@@ -107,7 +107,7 @@ Shift-Control-System/
 └── README.md                     # This file
 ```
 
-## 💼 Usage Guide
+## Usage Guide
 
 ### Initial Login
 - **Default Admin**: Create initial admin account through the system
@@ -129,7 +129,7 @@ Shift-Control-System/
 - Email notifications for important events (when enabled)
 - Comprehensive user activity tracking
 
-## 🎨 Recent Enhancements
+## Recent Enhancements
 
 ### Enhanced Role Management Interface
 - **Professional Table View**: Replaced basic text area with sortable JTable
@@ -142,7 +142,7 @@ Shift-Control-System/
 - **Automated Notifications**: Role changes, account status updates
 - **Configurable Settings**: Enable/disable email features
 
-## 🔧 Configuration
+## Configuration
 
 ### Email Settings
 Located in `email-config.properties`:
@@ -156,35 +156,9 @@ Located in `build.xml`:
 - Modify classpath settings
 - Configure distribution options
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 1. **Email not working**: Verify `email-config.properties` and Gmail App Password
 2. **Build failures**: Ensure Java 8+ and Ant are properly installed
 3. **Data persistence**: Check file permissions for data files
-
-### Debug Mode
-Enable detailed logging by checking `bitacora.txt` for system operations.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📞 Support
-
-For support and questions:
-- Create an issue on GitHub
-- Check the audit logs in `bitacora.txt` for system events
-- Review the email configuration for notification issues
-
----
-
-
