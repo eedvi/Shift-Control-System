@@ -6,6 +6,7 @@
 package archivo;
 
 import javax.swing.JOptionPane;
+import java.util.List;
 
 /**
  *
@@ -13,11 +14,18 @@ import javax.swing.JOptionPane;
  */
 public class Login extends javax.swing.JFrame {
 
+    private DatabaseManager dbManager;
+    private EmailService emailService;
+    private BitacoraManager bitacoraManager;
+
     /**
      * Creates new form Login
      */
     public Login() {
         initComponents();
+        dbManager = new DatabaseManager();
+        emailService = new EmailService();
+        bitacoraManager = new BitacoraManager();
     }
 
     /**
@@ -110,16 +118,68 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_txtusuarioActionPerformed
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        String Usuario = "Admin RRHH";
-        String Contraseña = "Adminrh";
-        
-        String Pass = new String (Password.getPassword());
-        if (txtusuario.getText().equals(Usuario)&& Pass.equals(Contraseña)){
-            Menu Sl = new Menu ();
-                    Sl.setVisible(true);
+        String usuario = txtusuario.getText().trim();
+        String password = new String(Password.getPassword());
+
+        // Validación de campos vacíos
+        if (usuario.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese usuario y contraseña",
+                                        "Campos requeridos", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            // Intentar autenticación con base de datos
+            Empleado empleadoAutenticado = dbManager.autenticarUsuario(usuario, password);
+
+            if (empleadoAutenticado != null) {
+                // Verificar que el usuario tenga rol de AdminRRHH
+                if ("AdminRRHH".equals(empleadoAutenticado.getRole())) {
+                    // Registrar login exitoso en bitácora
+                    bitacoraManager.registrarOperacion(usuario, "LOGIN",
+                                                     "Acceso exitoso al sistema", "");
+
+                    // Abrir menú principal
+                    Menu menu = new Menu(empleadoAutenticado);
+                    menu.setVisible(true);
                     dispose();
-        }else{
-            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecta");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No tiene permisos para acceder al sistema",
+                                                "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+
+                    // Registrar intento de acceso no autorizado
+                    bitacoraManager.registrarOperacion(usuario, "LOGIN_FAILED",
+                                                     "Intento de acceso sin permisos", usuario);
+                }
+            } else {
+                // Credenciales incorrectas
+                JOptionPane.showMessageDialog(this, "Credenciales incorrectas",
+                                            "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+
+                // Registrar intento fallido
+                bitacoraManager.registrarOperacion(usuario, "LOGIN_FAILED",
+                                                 "Credenciales incorrectas", "");
+            }
+        } catch (Exception e) {
+            // Fallback al sistema hardcodeado para compatibilidad
+            if ("Admin RRHH".equals(usuario) && "Adminrh".equals(password)) {
+                // Crear empleado temporal para el admin
+                Empleado adminTemp = new Empleado("000-000", "Admin RRHH", "Admin RRHH",
+                                                "Administración", "Diurno", "Activo",
+                                                "admin@empresa.com", "Adminrh");
+                adminTemp.setRole("AdminRRHH");
+
+                bitacoraManager.registrarOperacion(usuario, "LOGIN",
+                                                 "Acceso exitoso (modo compatibilidad)", "");
+
+                Menu menu = new Menu(adminTemp);
+                menu.setVisible(true);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecta");
+                bitacoraManager.registrarOperacion(usuario, "LOGIN_FAILED",
+                                                 "Credenciales incorrectas", "");
+            }
         }
     }//GEN-LAST:event_jButton1MouseClicked
 
