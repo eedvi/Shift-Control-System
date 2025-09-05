@@ -1,4 +1,0 @@
-[04/09/2025 22:07:17] Usuario: admin | Operación: LOGIN_FAILED | Empleado: admin | Detalles: Intento de acceso sin permisos
-[04/09/2025 22:08:35] Usuario: admin | Operación: LOGIN_FAILED | Empleado: admin | Detalles: Intento de acceso sin permisos
-[04/09/2025 22:08:39] Usuario: admin | Operación: LOGIN_FAILED | Empleado: admin | Detalles: Intento de acceso sin permisos
-[04/09/2025 22:08:54] Usuario: admin | Operación: LOGIN | Empleado:  | Detalles: Acceso exitoso al sistema
