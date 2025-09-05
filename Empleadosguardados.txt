@@ -3,5 +3,5 @@ rrhh|rrhh123|Admin RRHH|9876543210987|Recursos Humanos|Diurno|Activo|rrhh@empres
 1223|password|Alfredo|23430010101|Ventas|Vespertino|Activo|evicente@tribalworldwide.gt|Empleado
 2334|password|Alfredo|34345010101|Ventas|Vespertino|Activo|vicenterafael683@gmail.com|Empleado
 2344|password|Alfredo|68878010101|Ventas|Vespertino|Activo|edvi3859@gmail.com|Empleado
-2343|password|Enrique|23473010101|Ventas|Vespertino|Activo|evicentet2@miumg.edu.gt|Empleado
-
+2343|password|Enrique|23473010101|Ventas|Vespertino|Activo|evicentet2@miumg.edu.gt|AdminRRHH
+evicente|12345|Rafael Vicente|3037335860110|Desarrollo|Matutino|Activo|mailexample@mail.com|Empleado

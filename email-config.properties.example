@@ -7,10 +7,10 @@ smtp.port=587
 smtp.use.ssl=false
 smtp.use.starttls=true
 # Email Credentials (IMPORTANT: Use App Passwords for Gmail)
-email.username=vicenterafael683@gmail.com
-email.password=ylgglqwnfjmdldscx
-email.from=vicenterafael683@gmail.com
- 
+email.username=
+email.password=
+email.from=
+
 # Enable/Disable Email Service
 email.enabled=false
 
