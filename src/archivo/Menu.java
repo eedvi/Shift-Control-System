@@ -50,6 +50,7 @@ public class Menu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         RegistrarEmpleado = new javax.swing.JButton();
         GestionarRoles = new javax.swing.JButton();
+        btnCerrarSesion = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -72,6 +73,16 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
+        btnCerrarSesion.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btnCerrarSesion.setText("Cerrar Sesión");
+        btnCerrarSesion.setBackground(new java.awt.Color(220, 53, 69));
+        btnCerrarSesion.setForeground(java.awt.Color.WHITE);
+        btnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarSesionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -85,7 +96,8 @@ public class Menu extends javax.swing.JFrame {
                         .addGap(106, 106, 106)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(RegistrarEmpleado)
-                            .addComponent(GestionarRoles))))
+                            .addComponent(GestionarRoles)
+                            .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(180, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -97,7 +109,9 @@ public class Menu extends javax.swing.JFrame {
                 .addComponent(RegistrarEmpleado)
                 .addGap(74, 74, 74)
                 .addComponent(GestionarRoles)
-                .addContainerGap(160, Short.MAX_VALUE))
+                .addGap(40, 40, 40)
+                .addComponent(btnCerrarSesion)
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         pack();
@@ -116,6 +130,27 @@ public class Menu extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_GestionarRolesActionPerformed
 
+    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
+        // Confirmar cierre de sesión
+        int opcion = javax.swing.JOptionPane.showConfirmDialog(this,
+                "¿Está seguro que desea cerrar sesión?",
+                "Confirmar cierre de sesión",
+                javax.swing.JOptionPane.YES_NO_OPTION);
+
+        if (opcion == javax.swing.JOptionPane.YES_OPTION) {
+            // Registrar cierre de sesión en bitácora
+            if (usuarioActual != null && bitacoraManager != null) {
+                bitacoraManager.registrarOperacion(usuarioActual.getUsername(), "LOGOUT",
+                        "Cierre de sesión exitoso", "");
+            }
+
+            // Cerrar sesión y volver a la pantalla de inicio de sesión
+            Login login = new Login();
+            login.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnCerrarSesionActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -123,7 +158,7 @@ public class Menu extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -154,6 +189,7 @@ public class Menu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton GestionarRoles;
     private javax.swing.JButton RegistrarEmpleado;
+    private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
