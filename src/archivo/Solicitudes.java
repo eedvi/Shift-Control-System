@@ -9,7 +9,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -21,6 +20,7 @@ public class Solicitudes extends javax.swing.JFrame {
     private DatabaseManager dbManager;
     private BitacoraManager bitacoraManager;
     private EmailService emailService;
+    private SolicitudManager solicitudManager;
 
     private JTable tablaSolicitudes;
     private DefaultTableModel modeloTabla;
@@ -37,11 +37,12 @@ public class Solicitudes extends javax.swing.JFrame {
         // Constructor para compatibilidad
     }
 
-    public Solicitudes(Empleado usuario, DatabaseManager db, BitacoraManager bitacora, EmailService email) {
+    public Solicitudes(Empleado usuario, DatabaseManager db, BitacoraManager bitacora, EmailService email, SolicitudManager solicitudMgr) {
         this.usuarioActual = usuario;
         this.dbManager = db;
         this.bitacoraManager = bitacora;
         this.emailService = email;
+        this.solicitudManager = solicitudMgr;
         setupRequestInterface();
     }
 
@@ -107,18 +108,16 @@ public class Solicitudes extends javax.swing.JFrame {
         add(scrollPane, BorderLayout.CENTER);
         add(panelAcciones, BorderLayout.SOUTH);
 
-        // Cargar solicitudes pendientes
+        // ONLY load existing requests - NO example generation
         cargarSolicitudesPendientes();
-
-        // Agregar algunas solicitudes de ejemplo para demostración
-        agregarSolicitudesEjemplo();
 
         pack();
         setLocationRelativeTo(null);
     }
 
     private void cargarSolicitudesPendientes() {
-        List<Solicitud> solicitudes = dbManager.obtenerSolicitudesPendientes();
+        // Use SolicitudManager instead of DatabaseManager
+        List<Solicitud> solicitudes = solicitudManager.obtenerSolicitudesPendientes();
         actualizarTabla(solicitudes);
     }
 
@@ -157,26 +156,30 @@ public class Solicitudes extends javax.swing.JFrame {
             "Confirmar Aprobación", JOptionPane.YES_NO_OPTION);
 
         if (confirmacion == JOptionPane.YES_OPTION) {
-            Solicitud solicitud = dbManager.obtenerSolicitudPorId(solicitudId);
-            if (solicitud != null) {
-                solicitud.aprobar(usuarioActual.getUsername());
-                dbManager.actualizarSolicitud(solicitud);
+            try {
+                // Use SolicitudManager to update request status
+                solicitudManager.actualizarEstadoSolicitud(solicitudId, Solicitud.EstadoSolicitud.APROBADA,
+                                                         usuarioActual.getUsername(), null);
 
                 JOptionPane.showMessageDialog(this, "Solicitud aprobada exitosamente",
                                             "Aprobación exitosa", JOptionPane.INFORMATION_MESSAGE);
 
                 // Registrar en bitácora
                 bitacoraManager.registrarOperacion(usuarioActual.getUsername(), "APPROVE_REQUEST",
-                                                 "Solicitud aprobada: " + tipoSolicitud, solicitud.getEmpleadoDpi());
+                                                 "Solicitud aprobada: " + tipoSolicitud, "ID: " + solicitudId);
 
-                // Enviar email de confirmación
-                Empleado empleado = dbManager.obtenerEmpleadoPorDpi(solicitud.getEmpleadoDpi());
+                // Find employee for email notification
+                String empleadoDpi = (String) modeloTabla.getValueAt(filaSeleccionada, 2);
+                Empleado empleado = dbManager.obtenerEmpleadoPorDpi(empleadoDpi);
                 if (empleado != null && empleado.getEmail() != null && !empleado.getEmail().isEmpty()) {
                     emailService.enviarAprobacionSolicitud(empleado.getEmail(), empleado.getNombre(), tipoSolicitud);
                 }
 
                 // Actualizar tabla
                 cargarSolicitudesPendientes();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al aprobar la solicitud: " + ex.getMessage(),
+                                            "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -209,10 +212,10 @@ public class Solicitudes extends javax.swing.JFrame {
             "Confirmar Rechazo", JOptionPane.YES_NO_OPTION);
 
         if (confirmacion == JOptionPane.YES_OPTION) {
-            Solicitud solicitud = dbManager.obtenerSolicitudPorId(solicitudId);
-            if (solicitud != null) {
-                solicitud.rechazar(usuarioActual.getUsername(), motivoRechazo);
-                dbManager.actualizarSolicitud(solicitud);
+            try {
+                // Use SolicitudManager to update request status
+                solicitudManager.actualizarEstadoSolicitud(solicitudId, Solicitud.EstadoSolicitud.RECHAZADA,
+                                                         usuarioActual.getUsername(), motivoRechazo);
 
                 JOptionPane.showMessageDialog(this, "Solicitud rechazada",
                                             "Rechazo procesado", JOptionPane.INFORMATION_MESSAGE);
@@ -220,10 +223,11 @@ public class Solicitudes extends javax.swing.JFrame {
                 // Registrar en bitácora
                 bitacoraManager.registrarOperacion(usuarioActual.getUsername(), "REJECT_REQUEST",
                                                  "Solicitud rechazada: " + tipoSolicitud + ". Motivo: " + motivoRechazo,
-                                                 solicitud.getEmpleadoDpi());
+                                                 "ID: " + solicitudId);
 
-                // Enviar email de rechazo
-                Empleado empleado = dbManager.obtenerEmpleadoPorDpi(solicitud.getEmpleadoDpi());
+                // Find employee for email notification
+                String empleadoDpi = (String) modeloTabla.getValueAt(filaSeleccionada, 2);
+                Empleado empleado = dbManager.obtenerEmpleadoPorDpi(empleadoDpi);
                 if (empleado != null && empleado.getEmail() != null && !empleado.getEmail().isEmpty()) {
                     emailService.enviarRechazoSolicitud(empleado.getEmail(), empleado.getNombre(),
                                                       tipoSolicitud, motivoRechazo);
@@ -232,6 +236,9 @@ public class Solicitudes extends javax.swing.JFrame {
                 // Limpiar motivo y actualizar tabla
                 txtMotivoRechazo.setText("");
                 cargarSolicitudesPendientes();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al rechazar la solicitud: " + ex.getMessage(),
+                                            "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -240,32 +247,6 @@ public class Solicitudes extends javax.swing.JFrame {
         MantenimientoUsuario menu = new MantenimientoUsuario(usuarioActual, dbManager, bitacoraManager);
         menu.setVisible(true);
         dispose();
-    }
-
-    // Agregar solicitudes de ejemplo para demostración
-    private void agregarSolicitudesEjemplo() {
-        // Create example requests using actual employees from the system
-        List<Empleado> empleados = dbManager.obtenerTodosEmpleados();
-
-        // Only create examples if there are employees and no existing requests
-        if (!empleados.isEmpty() && dbManager.obtenerSolicitudesPendientes().isEmpty()) {
-            // Find employees with "Empleado" role (not admin users)
-            for (Empleado emp : empleados) {
-                if ("Empleado".equals(emp.getRole())) {
-                    // Create a vacation request for the first employee found
-                    Solicitud solicitud1 = new Solicitud(emp.getDpi(), emp.getNombre(),
-                                                        Solicitud.TipoSolicitud.VACACIONES,
-                                                        "Vacaciones familiares",
-                                                        LocalDateTime.now().plusDays(7),
-                                                        LocalDateTime.now().plusDays(14));
-                    dbManager.crearSolicitud(solicitud1);
-                    break; // Only create one example
-                }
-            }
-        }
-
-        // Actualizar tabla
-        cargarSolicitudesPendientes();
     }
 
     // Mantener compatibilidad con código existente

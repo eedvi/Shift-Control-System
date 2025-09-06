@@ -133,23 +133,34 @@ public class Login extends javax.swing.JFrame {
             Empleado empleadoAutenticado = dbManager.autenticarUsuario(usuario, password);
 
             if (empleadoAutenticado != null) {
-                // Verificar que el usuario tenga rol de AdminRRHH
-                if ("AdminRRHH".equals(empleadoAutenticado.getRole())) {
+                // Verificar rol del usuario
+                String role = empleadoAutenticado.getRole();
+
+                if ("AdminRRHH".equals(role)) {
                     // Registrar login exitoso en bitácora
                     bitacoraManager.registrarOperacion(usuario, "LOGIN",
-                                                     "Acceso exitoso al sistema", "");
+                                                     "Acceso exitoso al sistema (AdminRRHH)", "");
 
-                    // Abrir menú principal
+                    // Abrir menú principal de administración
                     Menu menu = new Menu(empleadoAutenticado);
                     menu.setVisible(true);
                     dispose();
+                } else if ("Empleado".equals(role)) {
+                    // Registrar login exitoso en bitácora
+                    bitacoraManager.registrarOperacion(usuario, "LOGIN",
+                                                     "Acceso exitoso al sistema (Empleado)", "");
+
+                    // Abrir menú de empleado
+                    MenuEmpleado menuEmpleado = new MenuEmpleado(empleadoAutenticado);
+                    menuEmpleado.setVisible(true);
+                    dispose();
                 } else {
-                    JOptionPane.showMessageDialog(this, "No tiene permisos para acceder al sistema",
+                    JOptionPane.showMessageDialog(this, "Rol no reconocido: " + role,
                                                 "Acceso denegado", JOptionPane.ERROR_MESSAGE);
 
-                    // Registrar intento de acceso no autorizado
+                    // Registrar intento de acceso con rol no válido
                     bitacoraManager.registrarOperacion(usuario, "LOGIN_FAILED",
-                                                     "Intento de acceso sin permisos", usuario);
+                                                     "Intento de acceso con rol no válido: " + role, usuario);
                 }
             } else {
                 // Credenciales incorrectas
