@@ -150,8 +150,9 @@ public class MantenimientoUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // Solicitudes
-        Solicitudes solicitudes = new Solicitudes(usuarioActual, dbManager, bitacoraManager, emailService);
+        // Solicitudes - Create SolicitudManager and pass it to the constructor
+        SolicitudManager solicitudManager = new SolicitudManager();
+        Solicitudes solicitudes = new Solicitudes(usuarioActual, dbManager, bitacoraManager, emailService, solicitudManager);
         solicitudes.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
