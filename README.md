@@ -33,7 +33,43 @@ A comprehensive Java desktop application for employee shift management and HR ad
 - **Email**: Gmail account (for email notifications) or custom SMTP server
 
 ### Dependencies
-- `javax.mail-1.6.2.jar` (included in `lib/` directory)
+- `javax.mail-1.6.2.jar` (included in `lib/` directory) - For email notifications
+- `jcalendar-1.4.jar` (included in `lib/` directory) - For calendar date picker components
+
+### Manual Dependency Installation (if needed)
+
+If the dependencies are not included in the `lib/` directory, you can download them manually:
+
+#### JavaMail API
+```bash
+# Download javax.mail dependency
+wget https://repo1.maven.org/maven2/com/sun/mail/javax.mail/1.6.2/javax.mail-1.6.2.jar -P lib/
+
+# Or using curl
+curl -o lib/javax.mail-1.6.2.jar https://repo1.maven.org/maven2/com/sun/mail/javax.mail/1.6.2/javax.mail-1.6.2.jar
+```
+
+#### JCalendar Library
+```bash
+# Download JCalendar dependency
+wget https://repo1.maven.org/maven2/com/toedter/jcalendar/1.4/jcalendar-1.4.jar -P lib/
+
+# Or using curl
+curl -o lib/jcalendar-1.4.jar https://repo1.maven.org/maven2/com/toedter/jcalendar/1.4/jcalendar-1.4.jar
+```
+
+#### Alternative: Maven Central Links
+- **JavaMail**: https://repo1.maven.org/maven2/com/sun/mail/javax.mail/1.6.2/javax.mail-1.6.2.jar
+- **JCalendar**: https://repo1.maven.org/maven2/com/toedter/jcalendar/1.4/jcalendar-1.4.jar
+
+#### Verify Dependencies
+```bash
+# Check if dependencies are properly installed
+ls -la lib/
+# Should show:
+# javax.mail-1.6.2.jar
+# jcalendar-1.4.jar
+```
 
 ## Installation & Setup
 
