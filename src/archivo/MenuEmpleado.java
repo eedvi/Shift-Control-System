@@ -19,6 +19,7 @@ public class MenuEmpleado extends JFrame {
     private JLabel lblBienvenida;
     private JButton btnCrearSolicitud;
     private JButton btnVerSolicitudes;
+    private JButton btnMarcaje;
     private JButton btnCerrarSesion;
     private JLabel lblInfoEmpleado;
 
@@ -74,6 +75,17 @@ public class MenuEmpleado extends JFrame {
             }
         });
 
+        btnMarcaje = new JButton("Sistema de Marcaje");
+        btnMarcaje.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnMarcaje.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnMarcaje.setPreferredSize(new Dimension(350, 50));
+        btnMarcaje.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirSistemaMarcaje();
+            }
+        });
+
         btnCerrarSesion = new JButton("Cerrar Sesión");
         btnCerrarSesion.setFont(new Font("Tahoma", Font.BOLD, 16));
         btnCerrarSesion.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -89,11 +101,13 @@ public class MenuEmpleado extends JFrame {
         panelPrincipal.add(lblBienvenida);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 20)));
         panelPrincipal.add(lblInfoEmpleado);
-        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 40)));
+        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 30)));
+        panelPrincipal.add(btnMarcaje);
+        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 15)));
         panelPrincipal.add(btnCrearSolicitud);
-        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 20)));
+        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 15)));
         panelPrincipal.add(btnVerSolicitudes);
-        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 40)));
+        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 30)));
         panelPrincipal.add(btnCerrarSesion);
 
         add(panelPrincipal, BorderLayout.CENTER);
@@ -101,7 +115,7 @@ public class MenuEmpleado extends JFrame {
 
     private void configurarVentana() {
         setTitle("Sistema de Control de Turnos - Portal del Empleado");
-        setSize(500, 400);
+        setSize(500, 480);
         setLocationRelativeTo(null);
         setResizable(false);
     }
@@ -141,6 +155,20 @@ public class MenuEmpleado extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, 
                     "Error al abrir la ventana de solicitudes: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void abrirSistemaMarcaje() {
+        try {
+            bitacoraManager.registrarOperacion(empleadoActual.getUsername(), "MENU_NAVEGACION",
+                    "Acceso al sistema de marcaje", "");
+            
+            SistemaMarcaje ventanaMarcaje = new SistemaMarcaje(empleadoActual);
+            ventanaMarcaje.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                    "Error al abrir el sistema de marcaje: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }

@@ -7,7 +7,7 @@ replay_pid*
 
 # Build outputs (Ant/IDE)
 /build/
-/dist/
+/dist
 /out/
 
 # NetBeans (Ant projects)
