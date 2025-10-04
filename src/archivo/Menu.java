@@ -50,6 +50,7 @@ public class Menu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         RegistrarEmpleado = new javax.swing.JButton();
         GestionarRoles = new javax.swing.JButton();
+        btnAsignacionTurnos = new javax.swing.JButton();
         btnCerrarSesion = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -70,6 +71,14 @@ public class Menu extends javax.swing.JFrame {
         GestionarRoles.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 GestionarRolesActionPerformed(evt);
+            }
+        });
+
+        btnAsignacionTurnos.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        btnAsignacionTurnos.setText("Asignacion de Turnos");
+        btnAsignacionTurnos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAsignacionTurnosActionPerformed(evt);
             }
         });
 
@@ -97,6 +106,7 @@ public class Menu extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(RegistrarEmpleado)
                             .addComponent(GestionarRoles)
+                            .addComponent(btnAsignacionTurnos)
                             .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(180, Short.MAX_VALUE))
         );
@@ -107,8 +117,10 @@ public class Menu extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(97, 97, 97)
                 .addComponent(RegistrarEmpleado)
-                .addGap(74, 74, 74)
+                .addGap(30, 30, 30)
                 .addComponent(GestionarRoles)
+                .addGap(30, 30, 30)
+                .addComponent(btnAsignacionTurnos)
                 .addGap(40, 40, 40)
                 .addComponent(btnCerrarSesion)
                 .addContainerGap(40, Short.MAX_VALUE))
@@ -129,6 +141,35 @@ public class Menu extends javax.swing.JFrame {
         gestionRoles.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_GestionarRolesActionPerformed
+
+    private void btnAsignacionTurnosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsignacionTurnosActionPerformed
+        // Validar que el usuario tenga permisos de AdminRRHH (RN01)
+        if (usuarioActual == null || !"AdminRRHH".equals(usuarioActual.getRole())) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "No tiene permisos para acceder a la asignación de turnos.\n" +
+                "Esta función está disponible solo para administradores de área.",
+                "Acceso denegado",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            // Registrar acceso en bitácora
+            bitacoraManager.registrarOperacion(usuarioActual.getUsername(), "MENU_NAVEGACION",
+                "Acceso al módulo de asignación de turnos", usuarioActual.getDpi());
+
+            // Abrir ventana de asignación de turnos
+            AsignacionTurnos ventanaAsignacion = new AsignacionTurnos(usuarioActual);
+            ventanaAsignacion.setVisible(true);
+            this.dispose();
+
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Error al acceder al módulo de asignación de turnos: " + e.getMessage(),
+                "Error del sistema",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAsignacionTurnosActionPerformed
 
     private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
         // Confirmar cierre de sesión
@@ -189,6 +230,7 @@ public class Menu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton GestionarRoles;
     private javax.swing.JButton RegistrarEmpleado;
+    private javax.swing.JButton btnAsignacionTurnos;
     private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables

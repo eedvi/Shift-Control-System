@@ -20,6 +20,7 @@ public class MenuEmpleado extends JFrame {
     private JButton btnCrearSolicitud;
     private JButton btnVerSolicitudes;
     private JButton btnMarcaje;
+    private JButton btnVerTurnos;
     private JButton btnCerrarSesion;
     private JLabel lblInfoEmpleado;
 
@@ -86,6 +87,17 @@ public class MenuEmpleado extends JFrame {
             }
         });
 
+        btnVerTurnos = new JButton("Ver Mis Turnos");
+        btnVerTurnos.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnVerTurnos.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnVerTurnos.setPreferredSize(new Dimension(350, 50));
+        btnVerTurnos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirVerTurnos();
+            }
+        });
+
         btnCerrarSesion = new JButton("Cerrar Sesión");
         btnCerrarSesion.setFont(new Font("Tahoma", Font.BOLD, 16));
         btnCerrarSesion.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -104,6 +116,8 @@ public class MenuEmpleado extends JFrame {
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 30)));
         panelPrincipal.add(btnMarcaje);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 15)));
+        panelPrincipal.add(btnVerTurnos);
+        panelPrincipal.add(Box.createRigidArea(new Dimension(0, 15)));
         panelPrincipal.add(btnCrearSolicitud);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 15)));
         panelPrincipal.add(btnVerSolicitudes);
@@ -115,7 +129,7 @@ public class MenuEmpleado extends JFrame {
 
     private void configurarVentana() {
         setTitle("Sistema de Control de Turnos - Portal del Empleado");
-        setSize(500, 480);
+        setSize(500, 550);
         setLocationRelativeTo(null);
         setResizable(false);
     }
@@ -169,6 +183,20 @@ public class MenuEmpleado extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, 
                     "Error al abrir el sistema de marcaje: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void abrirVerTurnos() {
+        try {
+            bitacoraManager.registrarOperacion(empleadoActual.getUsername(), "MENU_NAVEGACION",
+                    "Acceso a consulta de turnos asignados", "");
+            
+            VerTurnosEmpleado ventanaTurnos = new VerTurnosEmpleado(empleadoActual);
+            ventanaTurnos.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                    "Error al abrir la consulta de turnos: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
