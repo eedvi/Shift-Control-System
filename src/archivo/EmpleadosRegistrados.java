@@ -58,7 +58,7 @@ public class EmpleadosRegistrados extends javax.swing.JFrame {
         panelBusqueda.add(btnBuscar);
 
         // Tabla de empleados
-        String[] columnas = {"Username", "Nombre", "DPI", "Área", "Turno", "Estado", "Email"};
+        String[] columnas = {"Username", "Nombre", "DPI", "Area", "Turno", "Estado", "Email"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {

@@ -232,7 +232,7 @@ public class RegistrodeEmpleados extends javax.swing.JFrame {
         addFormField(contentPane, gbc, "No. DPI (*)", txtdpi = new JTextField(20), 1);
         addFormField(contentPane, gbc, "Nombre Completo (*)", txtnombre = new JTextField(20), 2);
         addFormField(contentPane, gbc, "Username (*)", txtUsername = new JTextField(20), 3);
-        addFormField(contentPane, gbc, "Área/Departamento (*)", txtarea = new JTextField(20), 4);
+        addFormField(contentPane, gbc, "Area/Departamento (*)", txtarea = new JTextField(20), 4);
 
         // Shift selection
         cboturno = new JComboBox<>(new String[]{"Matutino", "Vespertino", "Diurno"});
@@ -383,7 +383,7 @@ public class RegistrodeEmpleados extends javax.swing.JFrame {
             errores.append("- Username es requerido\n");
         }
         if (txtarea.getText().trim().isEmpty()) {
-            errores.append("- Área/Departamento es requerido\n");
+            errores.append("- Area/Departamento es requerido\n");
         }
         if (cboturno.getSelectedItem() == null) {
             errores.append("- Turno es requerido\n");

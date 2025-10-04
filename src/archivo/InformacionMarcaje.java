@@ -171,7 +171,7 @@ public class InformacionMarcaje extends JFrame {
             // Verificar si es entrada tardía (después de las 8:00 AM)
             if (marcaje.getFechaHora().getHour() > 8 || 
                 (marcaje.getFechaHora().getHour() == 8 && marcaje.getFechaHora().getMinute() > 0)) {
-                return "TARDÍA";
+                return "TARDIA";
             } else {
                 return "PUNTUAL";
             }

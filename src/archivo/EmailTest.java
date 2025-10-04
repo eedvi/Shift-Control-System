@@ -52,7 +52,7 @@ public class EmailTest {
             System.out.println("Gmail configuration is working properly.");
             
         } catch (MessagingException e) {
-            System.err.println("❌ FAILED! Error sending email:");
+            System.err.println("FAILED! Error sending email:");
             System.err.println(e.getMessage());
             e.printStackTrace();
             

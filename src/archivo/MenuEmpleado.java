@@ -122,7 +122,7 @@ public class MenuEmpleado extends JFrame {
 
     private void mostrarInformacionEmpleado() {
         if (empleadoActual != null) {
-            String info = String.format("<html><center>Bienvenido, %s<br>DPI: %s | Área: %s | Turno: %s</center></html>",
+            String info = String.format("<html><center>Bienvenido, %s<br>DPI: %s | Area: %s | Turno: %s</center></html>",
                     empleadoActual.getNombre(),
                     empleadoActual.getDpi(),
                     empleadoActual.getArea(),

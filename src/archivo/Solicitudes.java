@@ -72,7 +72,7 @@ public class Solicitudes extends javax.swing.JFrame {
         // Panel de acciones
         JPanel panelAcciones = new JPanel(new BorderLayout());
 
-        // Área para motivo de rechazo
+        // Area para motivo de rechazo
         JPanel panelMotivo = new JPanel(new BorderLayout());
         panelMotivo.add(new JLabel("Motivo de Rechazo (opcional):"), BorderLayout.NORTH);
         txtMotivoRechazo = new JTextArea(3, 30);
